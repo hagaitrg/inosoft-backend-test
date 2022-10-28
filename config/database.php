@@ -36,8 +36,8 @@ return [
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://dev:dev123@mydb.99ggofn.mongodb.net/?retryWrites=true&w=majority'),
-            'database' => 'MyDB',
+            'dsn' => env('DB_URI', 'mongodb+srv://dev:dev123@my-db.4roicuq.mongodb.net/?retryWrites=true&w=majority'),
+            'database' => 'my-db',
         ],
 
         'sqlite' => [
