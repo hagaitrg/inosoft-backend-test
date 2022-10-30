@@ -31,7 +31,7 @@ class KendaraanController extends Controller
         if ($validator->fails()) {
             return $this->response->responseError($validator->errors(), "Validation Error!", 400);
         }
-        $data= [];
+
         try {
             $data = $this->kendaraanRepo->storeMotor($request);
             return $this->response->responseSuccess($data,'Successfully store motor!', 200);
@@ -40,4 +40,38 @@ class KendaraanController extends Controller
         }
         
     }
+
+    public function storeMobil(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "mesin" => 'required|string|min:3|unique:motors',
+            "kapasitas_penumpang" => 'required|numeric',
+            "tipe" => 'required|string|min:5',
+            "tahun_keluaran" => 'required|string|min:4',
+            "warna" => 'required|string|min:3',
+            "harga" => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->response->responseError($validator->errors(), "Validation Error!", 400);
+        }
+
+        try {
+            $data = $this->kendaraanRepo->storeMobil($request);
+            return $this->response->responseSuccess($data,'Successfully store mobil!', 200);
+        } catch (\Throwable $th) {
+            return $this->response->responseError($th->getMessage(),'Failed store mobil!', 400);
+        }
+    }
+
+    public function stockKendaraan()
+    {
+        try {
+            $data = $this->kendaraanRepo->stockKendaraan();
+            return $this->response->responseSuccess($data,'Successfully get stock kendaraan!', 200);
+        } catch (\Throwable $th) {
+            return $this->response->responseError($th->getMessage(),'Failed get stock kendaraan!', 400);
+        }
+    }
+
 }
