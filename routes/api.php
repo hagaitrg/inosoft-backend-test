@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Auth\UserController;
+use App\Http\Controllers\API\Main\KendaraanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,21 @@ Route::prefix('v1')->group(function(){
     Route::prefix('users')->group(function(){
         Route::post('register', [UserController::class,'register']);
         Route::post('login', [UserController::class,'login']);
+    });
+
+    Route::middleware('jwt.verify')->group(function(){
+        Route::prefix('kendaraans')->group(function(){
+            Route::prefix('motors')->group(function(){
+                Route::post('store', [KendaraanController::class,'storeMotor']);
+            });
+
+            Route::prefix('mobils')->group(function(){
+                Route::post('store', [KendaraanController::class,'storeMobil']);
+            });
+
+            Route::get('stock', [KendaraanController::class, 'stockKendaraan']);
+            Route::post('sell/{kendaraanId}', [KendaraanController::class, 'sellKendaraan']);
+            Route::get('laporan-penjualan/{kendaraanId}', [KendaraanController::class, 'laporanPenjualan']);
+        });
     });
 });
