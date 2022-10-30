@@ -6,7 +6,8 @@ use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase {
-    public function testRegister() {
+    public function testRegister() 
+    {
         $password= $this->faker->password;
         $payload = [
             'name' => $this->faker->name,
@@ -31,5 +32,22 @@ class UserControllerTest extends TestCase {
                         'created_at'
                     ]
                 ]);
+    }
+
+    public function testLogin()
+    {
+        $payload = [
+            'email' => 'test@email.com',
+            'password' => 'inipassword',
+        ];
+
+        $this->json('post','/api/v1/users/login', $payload)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'access_token',
+                'token_type',
+                'expires_in',
+                'user'
+            ]);
     }
 }
