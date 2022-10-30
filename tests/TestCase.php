@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Faker\Factory;
-use Generator;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Exception;
 
