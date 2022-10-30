@@ -6,7 +6,7 @@ use App\Models\User;
 use Tests\TestCase;
 
 class KendaraanControllerTest extends TestCase {
-    public function storeMotorTest()
+    public function testStoreMotor()
     {
         $payload = [
             "mesin" => $this->faker->name,
@@ -21,13 +21,31 @@ class KendaraanControllerTest extends TestCase {
 
         $this->actingAs($user, 'api')
         ->withSession(['banned'=>false])
-        ->post('/api/v1/users/kendaraans/motors/store', $payload)
+        ->json('post','/api/v1/kendaraans/motors/store', $payload)
         ->assertStatus(200)
         ->assertJsonStructure([
             'success',
             'code',
             'message',
-            'data'
+            'data' => [
+                [
+                    'mesin',
+                    'tipe_suspensi',
+                    'tipe_transmisi',
+                    'updated_at',
+                    'created_at',
+                    '_id'
+                ],
+                [
+                    'motors_id',
+                    'tahun_keluaran',
+                    'warna',
+                    'harga',
+                    'updated_at',
+                    'created_at',
+                    '_id'
+                ]
+            ]
         ]);
     }
 }
