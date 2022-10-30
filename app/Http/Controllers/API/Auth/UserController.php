@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    protected $response, $auth;
+    protected $response;
 
     public function __construct(ResponseRepository $response)
     {

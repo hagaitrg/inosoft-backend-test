@@ -17,9 +17,9 @@ class CreateKendaraansTable extends Migration
             $collection->id();
             $collection->foreignId('motor_id')->nullable()->constrained()->onDelete('cascade');
             $collection->foreignId('mobil_id')->nullable()->constrained()->onDelete('cascade');
-            $collection->date('tahun_keluaran');
+            $collection->string('tahun_keluaran');
             $collection->string('warna');
-            $collection->string('harga');
+            $collection->integer('harga');
             $collection->timestamps();
         });
     }

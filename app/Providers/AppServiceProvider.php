@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repository\KendaraanRepository;
+use App\Repository\MotorRepository;
 use App\Repository\ResponseRepository;
-use App\Repository\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(ResponseRepository::class);
+        $this->app->bind(KendaraanRepository::class);
     }
 
     /**
