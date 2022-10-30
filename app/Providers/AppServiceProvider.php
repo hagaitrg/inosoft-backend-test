@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Repository\ResponseRepository;
+use App\Repository\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
