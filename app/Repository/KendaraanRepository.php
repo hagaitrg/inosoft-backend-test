@@ -4,12 +4,16 @@ namespace App\Repository;
 use App\Models\Kendaraan;
 use App\Models\Mobil;
 use App\Models\Motor;
+use App\Models\Penjualan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 interface KendaraanStruct {
     public function storeMotor(Request $request);
     public function storeMobil(Request $request);
     public function stockKendaraan();
+    public function sellKendaraan($kendaraanId, $total, $hargaPenjualan);
+    public function laporanPenjualan($kendaraanId);
 }
 
 class KendaraanRepository implements KendaraanStruct{
@@ -72,6 +76,32 @@ class KendaraanRepository implements KendaraanStruct{
         ];
 
         return $data;
+    }
+
+    public function sellKendaraan($kendaraanId, $total, $hargaPenjualan)
+    {
+        $penjualan = Penjualan::updateOrCreate(
+            [
+                "kendaraan_id" => $kendaraanId,
+            ],
+            [
+                "total_terjual" => $total,
+                "total_harga" => $hargaPenjualan
+            ]
+        );
+        return $penjualan;
+        
+    }
+
+    public function laporanPenjualan($kendaraanId)
+    {
+        $penjualan = Penjualan::where('kendaraan_id', $kendaraanId)->first();
+
+        if ($penjualan == null) {
+            return false;
+        }
+
+        return $penjualan;
     }
 
 }

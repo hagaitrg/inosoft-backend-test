@@ -23,4 +23,9 @@ class Kendaraan extends Eloquent
     {
         return $this->belongsTo(Mobil::class);
     }
+
+    public function penjualan()
+    {
+        return $this->hasOne(Penjualan::class, 'kendaraan_id');
+    }
 }

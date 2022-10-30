@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\Main;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kendaraan;
+use App\Models\Penjualan;
 use App\Repository\KendaraanRepository;
 use App\Repository\ResponseRepository;
 use Illuminate\Http\Request;
@@ -71,6 +73,53 @@ class KendaraanController extends Controller
             return $this->response->responseSuccess($data,'Successfully get stock kendaraan!', 200);
         } catch (\Throwable $th) {
             return $this->response->responseError($th->getMessage(),'Failed get stock kendaraan!', 400);
+        }
+    }
+
+    public function sellKendaraan($kendaraanId, Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "quantity" => 'required|numeric|min:1',
+            "total_pembayaran" => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->response->responseError($validator->errors(), "Validation Error!", 400);
+        }
+
+        $kendaraan = Kendaraan::findOrFail($kendaraanId);
+        if ($kendaraan == null) {
+            return $this->response->responseError(null, "Kendaraan data not found!", 404);
+        }
+        $qty = $request->quantity;
+        $total_harga = $kendaraan->harga * $qty;
+
+        if ($request->total_pembayaran > $total_harga) {
+            return $this->response->responseError(null, "insufficient payment", 400);
+        }
+
+        $totalPenjualan = Penjualan::where('kendaraan_id', $kendaraan->id)->first();
+        $total = $totalPenjualan->total_terjual + $qty;
+        $hargaPenjualan = $total_harga + $totalPenjualan->total_harga;
+
+        try {
+            $data = $this->kendaraanRepo->sellKendaraan($kendaraanId, $total, $hargaPenjualan);
+            return $this->response->responseSuccess($data,'Successfully sell kendaraan!', 200);
+        } catch (\Throwable $th) {
+            return $this->response->responseError($th->getMessage(),'Failed sell kendaraan!', 400);
+        }
+    }
+
+    public function laporanPenjualan($kendaraanId)
+    {
+        try {
+            $data = $this->kendaraanRepo->laporanPenjualan($kendaraanId);
+            if (!$data) {
+                return $this->response->responseError(null,'Penjualan data not found!', 404);
+            }
+            return $this->response->responseSuccess($data,'Successfully get laporan penjualan!', 200);
+        } catch (\Throwable $th) {
+            return $this->response->responseError($th->getMessage(),'Failed get laporan penjualan!', 400);
         }
     }
 

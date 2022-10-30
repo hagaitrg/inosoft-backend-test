@@ -33,6 +33,8 @@ Route::prefix('v1')->group(function(){
             });
 
             Route::get('stock', [KendaraanController::class, 'stockKendaraan']);
+            Route::post('sell/{kendaraanId}', [KendaraanController::class, 'sellKendaraan']);
+            Route::get('laporan-penjualan/{kendaraanId}', [KendaraanController::class, 'laporanPenjualan']);
         });
     });
 });
