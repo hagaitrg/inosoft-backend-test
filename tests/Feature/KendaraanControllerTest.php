@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Kendaraan;
+use App\Models\Penjualan;
 use App\Models\User;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -129,10 +130,28 @@ class KendaraanControllerTest extends TestCase {
             "total_pembayaran" => $this->faker->numberBetween(17000000, 100000000)
         ];
 
-        $this->withoutExceptionHandling();
-
         $this->withHeader('Authorization', 'Bearer'. $token)
         ->json('post',"/api/v1/kendaraans/sell/{$kendaraanId}",$payload)
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'code',
+            'message',
+            'data'
+        ]);
+    }
+
+    public function testLaporanPenjualan()
+    {
+        $user = User::where('email', 'test@email.com')->first();
+        $token = JWTAuth::fromUser($user);
+
+        $penjualan = Penjualan::all()->pluck('kendaraan_id');
+        $kendaraanId = $this->faker->randomElement($penjualan);
+
+        $this->withoutExceptionHandling();
+        $this->withHeader('Authorization', 'Bearer'. $token)
+        ->json('get',"/api/v1/kendaraans/laporan-penjualan/{$kendaraanId}")
         ->assertStatus(200)
         ->assertJsonStructure([
             'success',
