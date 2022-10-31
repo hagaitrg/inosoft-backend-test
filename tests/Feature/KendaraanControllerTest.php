@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Kendaraan;
 use App\Models\User;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -112,6 +113,32 @@ class KendaraanControllerTest extends TestCase {
                 'motor',
                 'mobils'
             ]
+        ]);
+    }
+
+    public function testSellKendaraan()
+    {
+        $user = User::where('email', 'test@email.com')->first();
+        $token = JWTAuth::fromUser($user);
+
+        $kendaraan = Kendaraan::all()->pluck('id');
+        $kendaraanId = $this->faker->randomElement($kendaraan);
+
+        $payload = [
+            "quantity" => $this->faker->numberBetween(1, 10),
+            "total_pembayaran" => $this->faker->numberBetween(17000000, 100000000)
+        ];
+
+        $this->withoutExceptionHandling();
+
+        $this->withHeader('Authorization', 'Bearer'. $token)
+        ->json('post',"/api/v1/kendaraans/sell/{$kendaraanId}",$payload)
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'success',
+            'code',
+            'message',
+            'data'
         ]);
     }
 }
