@@ -97,13 +97,17 @@ class KendaraanController extends Controller
         if ($request->total_pembayaran > $total_harga) {
             return $this->response->responseError(null, "insufficient payment", 400);
         }
-
-        $totalPenjualan = Penjualan::where('kendaraan_id', $kendaraan->id)->first();
-        $total = $totalPenjualan->total_terjual + $qty;
-        $hargaPenjualan = $total_harga + $totalPenjualan->total_harga;
-
+        
         try {
-            $data = $this->kendaraanRepo->sellKendaraan($kendaraanId, $total, $hargaPenjualan);
+            $totalPenjualan = Penjualan::where('kendaraan_id', $kendaraan->id)->first();
+            $data = array();
+            if ($totalPenjualan != null) {
+                $total = $totalPenjualan->total_terjual + $qty;
+                $hargaPenjualan = $total_harga + $totalPenjualan->total_harga;
+                $data = $this->kendaraanRepo->sellKendaraan($kendaraanId, $total, $hargaPenjualan);
+            }else{
+                $data = $this->kendaraanRepo->sellKendaraan($kendaraanId, $qty, $total_harga);
+            }
             return $this->response->responseSuccess($data,'Successfully sell kendaraan!', 200);
         } catch (\Throwable $th) {
             return $this->response->responseError($th->getMessage(),'Failed sell kendaraan!', 400);
